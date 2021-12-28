@@ -73,35 +73,30 @@ class ViewController: UIViewController, ARSCNViewDelegate {
       let results = sceneView.hitTest(touchLocation, types: .existingPlaneUsingExtent)
       
       if let hitResult = results.first {
-        
-            // Create a new scene
-            let diceScene = SCNScene(named: "art.scnassets/diceCollada.scn")!
-    
-          if let diceNode = diceScene.rootNode.childNode(withName: "Dice", recursively: true) {
-    
-            diceNode.position = SCNVector3(
-              hitResult.worldTransform.columns.3.x,
-              hitResult.worldTransform.columns.3.y + diceNode.boundingSphere.radius,
-              hitResult.worldTransform.columns.3.z)
-            
-            diceArray.append(diceNode)
-    
-            sceneView.scene.rootNode.addChildNode(diceNode)
-            
-            roll(dice: diceNode)
-            
-          }
-        
+        addDice(atLocation: hitResult)
+          
       }
     }
   }
   
-  func rollAll() {
-    if !diceArray.isEmpty {
-      for dice in diceArray {
-        roll(dice: dice)
-      }
-    }
+  func addDice(atLocation location: ARHitTestResult) {
+    // Create a new scene
+    let diceScene = SCNScene(named: "art.scnassets/diceCollada.scn")!
+
+  if let diceNode = diceScene.rootNode.childNode(withName: "Dice", recursively: true) {
+
+    diceNode.position = SCNVector3(
+      location.worldTransform.columns.3.x,
+      location.worldTransform.columns.3.y + diceNode.boundingSphere.radius,
+      location.worldTransform.columns.3.z)
+    
+    diceArray.append(diceNode)
+
+    sceneView.scene.rootNode.addChildNode(diceNode)
+    
+    roll(dice: diceNode)
+    
+  }
   }
   
   func roll(dice: SCNNode) {
@@ -117,6 +112,14 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         z: CGFloat(randomZ * 5),
         duration: 0.5)
     )
+  }
+  
+  func rollAll() {
+    if !diceArray.isEmpty {
+      for dice in diceArray {
+        roll(dice: dice)
+      }
+    }
   }
   
   @IBAction func rollAgain(_ sender: UIBarButtonItem) {
