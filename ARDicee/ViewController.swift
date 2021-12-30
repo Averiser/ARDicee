@@ -145,7 +145,16 @@ class ViewController: UIViewController, ARSCNViewDelegate {
   func renderer(_ renderer: SCNSceneRenderer, didAdd node: SCNNode, for anchor: ARAnchor) {
     
     guard let planeAnchor = anchor as? ARPlaneAnchor else {return}
+    
+   let planeNode = createPlane(withPlaneAnchor: planeAnchor)
+    
+    node.addChildNode(planeNode)
+    
+  }
 
+  //MARK: - Plane Rendering Methods
+  
+  func createPlane(withPlaneAnchor planeAnchor  : ARPlaneAnchor) -> SCNNode {
     let plane = SCNPlane(width: CGFloat(planeAnchor.extent.x), height: CGFloat(planeAnchor.extent.z))
     
     let planeNode = SCNNode()
@@ -162,10 +171,8 @@ class ViewController: UIViewController, ARSCNViewDelegate {
     
     planeNode.geometry = plane
     
-    node.addChildNode(planeNode)
-    
+    return planeNode
   }
-
    
 }
 
